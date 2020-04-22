@@ -103,6 +103,10 @@ public class CarDao {
             session.close();
         }
     }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
 }
 
 

@@ -11,6 +11,8 @@ public class DailyReportService {
 
     private static DailyReportService dailyReportService;
 
+    private DailyReportDao dailyReportDao;
+
     private DailyReport currentReport;
 
     private SessionFactory sessionFactory;
@@ -30,19 +32,19 @@ public class DailyReportService {
     }
 
     public void addReport(Long earnings, Long soldCars) {
-        new DailyReportDao(sessionFactory.openSession()).addReport(earnings, soldCars);
+        getDao().addReport(earnings, soldCars);
     }
 
     public DailyReport getLastReport() {
-        return new DailyReportDao(sessionFactory.openSession()).getLastReport();
+        return getDao().getLastReport();
     }
 
     public List<DailyReport> getAllDailyReports() {
-        return new DailyReportDao(sessionFactory.openSession()).getAllDailyReport();
+        return getDao().getAllDailyReport();
     }
 
     public void deleteAllReports() {
-        new DailyReportDao(sessionFactory.openSession()).deleteReports();
+        getDao().deleteReports();
     }
 
     public void makeReportOnSale(Long price) {
@@ -54,5 +56,14 @@ public class DailyReportService {
         addReport(currentReport.getEarnings(), currentReport.getSoldCars());
         currentReport.setSoldCars(0L);
         currentReport.setEarnings(0L);
+    }
+
+    private DailyReportDao getDao() {
+        if (dailyReportDao == null) {
+            dailyReportDao = new DailyReportDao(sessionFactory.openSession());
+        } else {
+            dailyReportDao.setSession(sessionFactory.openSession());
+        }
+        return dailyReportDao;
     }
 }
